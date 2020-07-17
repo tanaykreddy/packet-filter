@@ -476,15 +476,15 @@
                 blacklist[i] = [];
 
                 if (!/\w+\[\d+\:\d+\]$/g.test(sections[i])) {
-                    showError("ERROR: BOUNDS CONTAIN INVALID SYNTAX");
+                    showError("ERROR: BOUNDS CONTAIN INVALID SYNTAX<br><br>" + sections[i]);
                     return;
                 }
 
                 finalText += "<th onclick='showFilter(" + i + ", this.innerText)'>" + sections[i].substring(0, sections[i].indexOf("[")) + "</th>";
-                bounds.push([sections[i].substring(sections[i].indexOf("[") + 1, sections[i].indexOf(":")) - 1, sections[i].substring(sections[i].indexOf(":") + 1, sections[i].length - 1)]);
+                bounds.push([sections[i].substring(sections[i].indexOf("[") + 1, sections[i].indexOf(":")), sections[i].substring(sections[i].indexOf(":") + 1, sections[i].length - 1)]);
 
-                if (bounds[i][0] <= bounds[i][1]) {
-                    showError("ERROR: UPPER BOUND IS SMALLER THAN LOWER BOUND");
+                if (parseInt(bounds[i][0]) < parseInt(bounds[i][1])) {
+                    showError("ERROR: UPPER BOUND IS SMALLER THAN LOWER BOUND<br><br>" + sections[i]);
                     return;
                 }
             }
@@ -497,14 +497,14 @@
                 var binString = makeBinString(inputString);
 
                 if (binString.includes("undefined")) {
-                    showError("ERROR: STRING CONTAINS INVALID CHARACTERS");
+                    showError("ERROR: STRING CONTAINS INVALID CHARACTERS<br><br>" + inputString);
                     return;
                 }
 
                 finalText += "<tr id='row-" + i + "' class='unselected'><td class='fixed-column'><span>" + (i + 1) + ")&nbsp;" + inputString + "</span></th>";
 
                 for (var j = 0; j < bounds.length; j++) {
-                    finalText += "<td><span>" + makeHexString(binString.substring(binString.length - bounds[j][0], binString.length - bounds[j][1])) + "</span></td>";
+                    finalText += "<td><span>" + makeHexString(binString.substring(binString.length - bounds[j][0] - 1, binString.length - bounds[j][1])) + "</span></td>";
                 }
 
                 finalText += "</tr>";
@@ -790,7 +790,7 @@
 
         //Displays an error with a given message
         function showError(message) {
-            document.querySelector("#table-container").innerHTML = "<span id='error-message'>" + message + "</span>";
+            document.querySelector("#table-container").innerHTML = "<div id='error-message'>" + message + "</div>";
         }
 
         //Detects whenever the help button is clicked
